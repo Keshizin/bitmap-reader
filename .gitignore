@@ -1,0 +1,3 @@
+bin/*.a
+bin/*.exe
+obj/*.o
