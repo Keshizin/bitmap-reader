@@ -1,6 +1,7 @@
 #include <diblib.h>
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 // ----------------------------------------------------------------------------
@@ -39,12 +40,12 @@ char DIBLIB::WORD::getByte2()
 // ----------------------------------------------------------------------------
 DIBLIB::DWORD::DWORD() : byte1(0), byte2(0), byte3(0), byte4(0) {}
 
-unsigned short DIBLIB::DWORD::get() const
+unsigned long DIBLIB::DWORD::get() const
 {
 	return (((0 | byte1) << 8 | byte2) << 8 | byte3) << 8 | byte4;
 }
 
-void DIBLIB::DWORD::set(unsigned short dword)
+void DIBLIB::DWORD::set(unsigned long dword)
 {
 }
 
@@ -83,23 +84,48 @@ char DIBLIB::DWORD::getByte4()
 // ----------------------------------------------------------------------------
 void DIBLIB::BITMAPFILEHEADER::print()
 {
-	bfSize.swap();
-
 	std::cout
 		<< "================================================================================"
-		<< "\n B I T M A P   F I L E   H E A D E R"
+		<< "\n B I T M A P   F I L E   H E A D E R   -   " << sizeof(DIBLIB::BITMAPFILEHEADER) << " bytes"
 		<< "\n================================================================================"
-		<< "\nbfType: "      << bfType.getByte1() << " " << bfType.getByte2()
-		<< "\nbfSize: "      << bfSize.get()
-		<< "\nbfReserved1: " << bfReserved1.get()
-		<< "\nbfReserved2: " << bfReserved2.get()
-		<< "\nbfOffBits: "   << bfOffBits.get()
+		<< "\n     bfType: "
+			<< std::setw(4) << bfType.getByte1()
+			<< std::setw(4) << bfType.getByte2()
+			<< std::setw(4) << "-"
+			<< std::setw(4) << "-" << " | "
+			<< bfType.get()
+		<< "\n     bfSize: "
+			<< std::setw(4) << static_cast<int>(bfSize.getByte1())
+			<< std::setw(4) << static_cast<int>(bfSize.getByte2())
+			<< std::setw(4) << static_cast<int>(bfSize.getByte3())
+			<< std::setw(4) << static_cast<int>(bfSize.getByte4()) << " | "
+			<< bfSize.get()
+		<< "\nbfReserved1: "
+			<< std::setw(4) << static_cast<int>(bfReserved1.getByte1())
+			<< std::setw(4) << static_cast<int>(bfReserved1.getByte2())
+			<< std::setw(4) << "-"
+			<< std::setw(4) << "-" << " | "
+			<< bfReserved1.get()
+		<< "\nbfReserved2: "
+			<< std::setw(4) << static_cast<int>(bfReserved2.getByte1())
+			<< std::setw(4) << static_cast<int>(bfReserved2.getByte2())
+			<< std::setw(4) << "-"
+			<< std::setw(4) << "-" << " | "
+			<< bfReserved2.get()
+		<< "\n  bfOffBits: "
+			<< std::setw(4) << static_cast<int>(bfOffBits.getByte1())
+			<< std::setw(4) << static_cast<int>(bfOffBits.getByte2())
+			<< std::setw(4) << static_cast<int>(bfOffBits.getByte3())
+			<< std::setw(4) << static_cast<int>(bfOffBits.getByte4()) << " | "
+			<< bfOffBits.get()
 		<< "\n================================================================================" << std::endl;
 }
 
 void DIBLIB::BITMAPFILEHEADER::swap()
 {
 	bfSize.swap();
+	bfReserved1.swap();
+	bfReserved2.swap();
 	bfOffBits.swap();
 }
 
@@ -110,7 +136,7 @@ void DIBLIB::BITMAPINFOHEADER::print()
 {
 	std::cout
 		<< "================================================================================"
-		<< "\n B I T M A P   I N F O   H E A D E R\n"
+		<< "\n B I T M A P   I N F O   H E A D E R   -   " << sizeof(DIBLIB::BITMAPINFOHEADER) << " bytes"
 		<< "\n================================================================================"
 		<< "\nbiSize: "          << biSize.get()
 		<< "\nbiWidth: "         << biWidth.get()
@@ -140,10 +166,9 @@ void DIB::loadFile(std::string filename)
 		return;
 	}
 
-	std::cout << "@debug | sizeof(BITMAPFILEHEADER): " << sizeof(DIBLIB::BITMAPFILEHEADER) << std::endl;
-
 	// reading BITMAPFILEHEADER
 	bitmapFile.read(reinterpret_cast<char *>(&bmfHeader), sizeof(DIBLIB::BITMAPFILEHEADER));
+	bmfHeader.swap();
 	bmfHeader.print();
 }
 

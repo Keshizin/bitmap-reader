@@ -25,8 +25,8 @@ namespace DIBLIB
 	public:
 		DWORD();
 
-		unsigned short get() const;
-		void set(unsigned short dword);
+		unsigned long get() const;
+		void set(unsigned long dword);
 		void swap();
 		char getByte1();
 		char getByte2();

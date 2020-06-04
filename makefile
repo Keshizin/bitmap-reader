@@ -30,6 +30,7 @@ DIRLIB_FLAGS=-L$(BIN_DIR)
 LIB_FLAGS=-ldibr
 
 test-all:
+	$(MAKE) all
 	g++ $(TEST_DIR)/main.cpp $(INC_FLAGS) $(DIRLIB_FLAGS) $(LIB_FLAGS) -o $(BIN_DIR)/$(OUTPUT_TEST_NAME) -Wall
 
 # -----------------------------------------------------------------------------
