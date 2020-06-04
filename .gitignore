@@ -1,3 +1,4 @@
 bin/*.a
 bin/*.exe
 obj/*.o
+tests/*.bmp

@@ -13,6 +13,8 @@ namespace DIBLIB
 		unsigned short get() const;
 		void set(unsigned short word);
 		void swap();
+		char getByte1();
+		char getByte2();
 	private:
 		unsigned char byte1;
 		unsigned char byte2;
@@ -26,6 +28,10 @@ namespace DIBLIB
 		unsigned short get() const;
 		void set(unsigned short dword);
 		void swap();
+		char getByte1();
+		char getByte2();
+		char getByte3();
+		char getByte4();
 	private:
 		unsigned char byte1;
 		unsigned char byte2;
@@ -37,9 +43,24 @@ namespace DIBLIB
 	{
 	};
 
+	class BITMAPFILEHEADER
+	{
+	public:
+		void print();
+		void swap();
+
+	private:
+		WORD bfType;
+		DWORD bfSize;
+		WORD bfReserved1;
+		WORD bfReserved2;
+		DWORD bfOffBits;
+	};
+
 	class BITMAPINFOHEADER
 	{
 	public:
+		void print();
 
 	private:
 		DWORD biSize; // 32 bits unsigned integer typedef unsigned long
@@ -48,7 +69,7 @@ namespace DIBLIB
 		WORD biPlanes; // 16 bits unsigned integer typedef unsigned short
 		WORD biBitCount; // 16 bits unsigned integer typedef unsigned short
 		DWORD biCompression; // 32 bits unsigned integer typedef unsigned long
-		DWORD biSizeIamge; // 32 bits unsigned integer typedef unsigned long
+		DWORD biSizeImage; // 32 bits unsigned integer typedef unsigned long
 		DWORD biXPelsPerMeter; // 32 bits signed integer typedef long
 		DWORD biYPelsPerMeter; // 32 bits signed integer typedef long
 		DWORD biClrUsed; // 32 bits unsigned integer typedef unsigned long
@@ -69,7 +90,7 @@ public:
 	void loadFile(std::string filename);
 
 private:
-	DIBLIB::BITMAPINFOHEADER bmiHeader;
+	DIBLIB::BITMAPFILEHEADER bmfHeader;
 };
 
 #endif

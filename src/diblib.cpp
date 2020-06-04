@@ -15,8 +15,6 @@ unsigned short DIBLIB::WORD::get() const
 
 void DIBLIB::WORD::set(unsigned short word)
 {
-	byte1 = (word >> 8);
-	byte2 = (word & 0xF0);
 }
 
 void DIBLIB::WORD::swap()
@@ -24,6 +22,16 @@ void DIBLIB::WORD::swap()
 	unsigned char temp = byte2;
 	byte2 = byte1;
 	byte1 = temp;
+}
+
+char DIBLIB::WORD::getByte1()
+{
+	return byte1;
+}
+
+char DIBLIB::WORD::getByte2()
+{
+	return byte2;
 }
 
 // ----------------------------------------------------------------------------
@@ -50,10 +58,77 @@ void DIBLIB::DWORD::swap()
 	byte3 = temp;
 }
 
+char DIBLIB::DWORD::getByte1()
+{
+	return byte1;
+}
+
+char DIBLIB::DWORD::getByte2()
+{
+	return byte2;
+}
+
+char DIBLIB::DWORD::getByte3()
+{
+	return byte3;
+}
+
+char DIBLIB::DWORD::getByte4()
+{
+	return byte4;
+}
+
+// ----------------------------------------------------------------------------
+//  BITMAPFILEHEADER CLASS METHODS
+// ----------------------------------------------------------------------------
+void DIBLIB::BITMAPFILEHEADER::print()
+{
+	bfSize.swap();
+
+	std::cout
+		<< "================================================================================"
+		<< "\n B I T M A P   F I L E   H E A D E R"
+		<< "\n================================================================================"
+		<< "\nbfType: "      << bfType.getByte1() << " " << bfType.getByte2()
+		<< "\nbfSize: "      << bfSize.get()
+		<< "\nbfReserved1: " << bfReserved1.get()
+		<< "\nbfReserved2: " << bfReserved2.get()
+		<< "\nbfOffBits: "   << bfOffBits.get()
+		<< "\n================================================================================" << std::endl;
+}
+
+void DIBLIB::BITMAPFILEHEADER::swap()
+{
+	bfSize.swap();
+	bfOffBits.swap();
+}
+
+// ----------------------------------------------------------------------------
+//  BITMAPINFOHEADER CLASS METHODS
+// ----------------------------------------------------------------------------
+void DIBLIB::BITMAPINFOHEADER::print()
+{
+	std::cout
+		<< "================================================================================"
+		<< "\n B I T M A P   I N F O   H E A D E R\n"
+		<< "\n================================================================================"
+		<< "\nbiSize: "          << biSize.get()
+		<< "\nbiWidth: "         << biWidth.get()
+		<< "\nbiHeight: "        << biHeight.get()
+		<< "\nbiPlanes: "        << biPlanes.get()
+		<< "\nbiBitCount: "      << biBitCount.get()
+		<< "\nbiCompression: "   << biCompression.get()
+		<< "\nbiSizeImage: "     << biSizeImage.get()
+		<< "\nbiXPelsPerMeter: " << biXPelsPerMeter.get()
+		<< "\nbiYPelsPerMeter: " << biYPelsPerMeter.get()
+		<< "\nbiClrUsed: "       << biClrUsed.get()
+		<< "\nbiClrImportant: "  << biClrImportant.get()
+		<< "\n================================================================================" << std::endl;
+}
+
 // ----------------------------------------------------------------------------
 //  DIB CLASS METHODS
 // ----------------------------------------------------------------------------
-
 void DIB::loadFile(std::string filename)
 {
 	std::ifstream bitmapFile(filename, std::ios::in | std::ios::binary);
@@ -65,8 +140,10 @@ void DIB::loadFile(std::string filename)
 		return;
 	}
 
-	std::cout << "@debug | sizeof(BITMAPINFOHEADER): " << sizeof(DIBLIB::BITMAPINFOHEADER) << std::endl;
+	std::cout << "@debug | sizeof(BITMAPFILEHEADER): " << sizeof(DIBLIB::BITMAPFILEHEADER) << std::endl;
 
-	// reading BITMAPINFOHEADER
-	bitmapFile.read(reinterpret_cast<char *>(&bmiHeader), sizeof(DIBLIB::BITMAPINFOHEADER));
+	// reading BITMAPFILEHEADER
+	bitmapFile.read(reinterpret_cast<char *>(&bmfHeader), sizeof(DIBLIB::BITMAPFILEHEADER));
+	bmfHeader.print();
 }
+
