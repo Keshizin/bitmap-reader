@@ -41,6 +41,16 @@ namespace DIBLIB
 
 	class RGBQUAD
 	{
+	public:
+		RGBQUAD();
+
+		void print();
+
+	private:
+		unsigned char rgbBlue;
+		unsigned char rgbGreen;
+		unsigned char rgbRed;
+		unsigned char rgbReserved;
 	};
 
 	class BITMAPFILEHEADER
@@ -48,6 +58,9 @@ namespace DIBLIB
 	public:
 		void print();
 		void swap();
+
+		DWORD getBfOffBits();
+		DWORD getBfSize();
 
 	private:
 		WORD bfType;
@@ -61,36 +74,46 @@ namespace DIBLIB
 	{
 	public:
 		void print();
+		void swap();
+
+		DWORD getBiSize();
+		DWORD getBiSizeImage();
+		DWORD getBiWidth();
+		DWORD getBiHeight();
 
 	private:
-		DWORD biSize; // 32 bits unsigned integer typedef unsigned long
-		DWORD biWidth; // 32 bits signed integer typedef long
-		DWORD biHeight; // 32 bits signed integer typedef long
-		WORD biPlanes; // 16 bits unsigned integer typedef unsigned short
-		WORD biBitCount; // 16 bits unsigned integer typedef unsigned short
-		DWORD biCompression; // 32 bits unsigned integer typedef unsigned long
-		DWORD biSizeImage; // 32 bits unsigned integer typedef unsigned long
-		DWORD biXPelsPerMeter; // 32 bits signed integer typedef long
-		DWORD biYPelsPerMeter; // 32 bits signed integer typedef long
-		DWORD biClrUsed; // 32 bits unsigned integer typedef unsigned long
-		DWORD biClrImportant; // 32 bits unsigned integer typedef unsigned long
-	};
-
-	class BITMAPINFO
-	{
-	private:
-		BITMAPINFOHEADER bmiHeader;
-		RGBQUAD * bmiColors;
+		DWORD biSize;
+		DWORD biWidth;
+		DWORD biHeight;
+		WORD biPlanes;
+		WORD biBitCount;
+		DWORD biCompression;
+		DWORD biSizeImage;
+		DWORD biXPelsPerMeter;
+		DWORD biYPelsPerMeter;
+		DWORD biClrUsed;
+		DWORD biClrImportant;
 	};
 }
 
 class DIB
 {
 public:
+	DIB();
+	~DIB();
+
 	void loadFile(std::string filename);
+	void printColorIndexDump();
+	unsigned long getWidth();
+	unsigned long getHeight();
+
+	unsigned char *getColorIndex();
 
 private:
 	DIBLIB::BITMAPFILEHEADER bmfHeader;
+	DIBLIB::BITMAPINFOHEADER bmiHeader;
+	DIBLIB::RGBQUAD *bmiColors;
+	unsigned char *colorIndex;
 };
 
 #endif

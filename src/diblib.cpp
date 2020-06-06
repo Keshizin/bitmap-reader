@@ -80,6 +80,24 @@ char DIBLIB::DWORD::getByte4()
 }
 
 // ----------------------------------------------------------------------------
+//  RGBQUAD CLASS METHODS
+// ----------------------------------------------------------------------------
+DIBLIB::RGBQUAD::RGBQUAD() : rgbBlue(0), rgbGreen(0), rgbRed(0), rgbReserved(0) {}
+
+void DIBLIB::RGBQUAD::print()
+{
+	std::cout
+		<< "================================================================================"
+		<< "\n R G B Q U A D   -   " << sizeof(DIBLIB::RGBQUAD) << " bytes"
+		<< "\n================================================================================"
+		<< "\n    rgbBlue: " << std::setw(4) << static_cast<int>(rgbBlue)
+		<< "\n   rgbGreen: " << std::setw(4) << static_cast<int>(rgbGreen)
+		<< "\n      gbRed: " << std::setw(4) << static_cast<int>(rgbRed)
+		<< "\nrgbReserved: " << std::setw(4) << static_cast<int>(rgbReserved)
+		<< "\n================================================================================" << std::endl;
+}
+
+// ----------------------------------------------------------------------------
 //  BITMAPFILEHEADER CLASS METHODS
 // ----------------------------------------------------------------------------
 void DIBLIB::BITMAPFILEHEADER::print()
@@ -129,6 +147,16 @@ void DIBLIB::BITMAPFILEHEADER::swap()
 	bfOffBits.swap();
 }
 
+DIBLIB::DWORD DIBLIB::BITMAPFILEHEADER::getBfOffBits()
+{
+	return bfOffBits;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPFILEHEADER::getBfSize()
+{
+	return bfSize;
+}
+
 // ----------------------------------------------------------------------------
 //  BITMAPINFOHEADER CLASS METHODS
 // ----------------------------------------------------------------------------
@@ -138,23 +166,121 @@ void DIBLIB::BITMAPINFOHEADER::print()
 		<< "================================================================================"
 		<< "\n B I T M A P   I N F O   H E A D E R   -   " << sizeof(DIBLIB::BITMAPINFOHEADER) << " bytes"
 		<< "\n================================================================================"
-		<< "\nbiSize: "          << biSize.get()
-		<< "\nbiWidth: "         << biWidth.get()
-		<< "\nbiHeight: "        << biHeight.get()
-		<< "\nbiPlanes: "        << biPlanes.get()
-		<< "\nbiBitCount: "      << biBitCount.get()
-		<< "\nbiCompression: "   << biCompression.get()
-		<< "\nbiSizeImage: "     << biSizeImage.get()
-		<< "\nbiXPelsPerMeter: " << biXPelsPerMeter.get()
-		<< "\nbiYPelsPerMeter: " << biYPelsPerMeter.get()
-		<< "\nbiClrUsed: "       << biClrUsed.get()
-		<< "\nbiClrImportant: "  << biClrImportant.get()
+		<< "\n         biSize: "
+			<< std::setw(4) << static_cast<int>(biSize.getByte1())
+			<< std::setw(4) << static_cast<int>(biSize.getByte2())
+			<< std::setw(4) << static_cast<int>(biSize.getByte3())
+			<< std::setw(4) << static_cast<int>(biSize.getByte4()) << " | "
+			<< biSize.get()
+		<< "\n        biWidth: "
+			<< std::setw(4) << static_cast<int>(biWidth.getByte1())
+			<< std::setw(4) << static_cast<int>(biWidth.getByte2())
+			<< std::setw(4) << static_cast<int>(biWidth.getByte3())
+			<< std::setw(4) << static_cast<int>(biWidth.getByte4()) << " | "
+			<< biWidth.get()
+		<< "\n       biHeight: "
+			<< std::setw(4) << static_cast<int>(biHeight.getByte1())
+			<< std::setw(4) << static_cast<int>(biHeight.getByte2())
+			<< std::setw(4) << static_cast<int>(biHeight.getByte3())
+			<< std::setw(4) << static_cast<int>(biHeight.getByte4()) << " | "
+			<< biHeight.get()
+		<< "\n       biPlanes: "
+			<< std::setw(4) << static_cast<int>(biPlanes.getByte1())
+			<< std::setw(4) << static_cast<int>(biPlanes.getByte2())
+			<< std::setw(4) << "-"
+			<< std::setw(4) << "-" << " | "
+			<< biPlanes.get()
+		<< "\n     biBitCount: "
+			<< std::setw(4) << static_cast<int>(biBitCount.getByte1())
+			<< std::setw(4) << static_cast<int>(biBitCount.getByte2())
+			<< std::setw(4) << "-"
+			<< std::setw(4) << "-" << " | "
+			<< biBitCount.get()
+		<< "\n  biCompression: "
+			<< std::setw(4) << static_cast<int>(biCompression.getByte1())
+			<< std::setw(4) << static_cast<int>(biCompression.getByte2())
+			<< std::setw(4) << static_cast<int>(biCompression.getByte3())
+			<< std::setw(4) << static_cast<int>(biCompression.getByte4()) << " | "
+			<< biCompression.get()
+		<< "\n    biSizeImage: "
+			<< std::setw(4) << static_cast<int>(biSizeImage.getByte1())
+			<< std::setw(4) << static_cast<int>(biSizeImage.getByte2())
+			<< std::setw(4) << static_cast<int>(biSizeImage.getByte3())
+			<< std::setw(4) << static_cast<int>(biSizeImage.getByte4()) << " | "
+			<< biSizeImage.get()
+		<< "\nbiXPelsPerMeter: "
+			<< std::setw(4) << static_cast<int>(biXPelsPerMeter.getByte1())
+			<< std::setw(4) << static_cast<int>(biXPelsPerMeter.getByte2())
+			<< std::setw(4) << static_cast<int>(biXPelsPerMeter.getByte3())
+			<< std::setw(4) << static_cast<int>(biXPelsPerMeter.getByte4()) << " | "
+			<< biXPelsPerMeter.get()
+		<< "\nbiYPelsPerMeter: "
+			<< std::setw(4) << static_cast<int>(biYPelsPerMeter.getByte1())
+			<< std::setw(4) << static_cast<int>(biYPelsPerMeter.getByte2())
+			<< std::setw(4) << static_cast<int>(biYPelsPerMeter.getByte3())
+			<< std::setw(4) << static_cast<int>(biYPelsPerMeter.getByte4()) << " | "
+			<< biYPelsPerMeter.get()
+		<< "\n      biClrUsed: "
+			<< std::setw(4) << static_cast<int>(biClrUsed.getByte1())
+			<< std::setw(4) << static_cast<int>(biClrUsed.getByte2())
+			<< std::setw(4) << static_cast<int>(biClrUsed.getByte3())
+			<< std::setw(4) << static_cast<int>(biClrUsed.getByte4()) << " | "
+			<< biClrUsed.get()
+		<< "\n biClrImportant: "
+			<< std::setw(4) << static_cast<int>(biClrImportant.getByte1())
+			<< std::setw(4) << static_cast<int>(biClrImportant.getByte2())
+			<< std::setw(4) << static_cast<int>(biClrImportant.getByte3())
+			<< std::setw(4) << static_cast<int>(biClrImportant.getByte4()) << " | "
+			<< biClrImportant.get()
 		<< "\n================================================================================" << std::endl;
+}
+
+void DIBLIB::BITMAPINFOHEADER::swap()
+{
+	biSize.swap();
+	biWidth.swap();
+	biHeight.swap();
+	biPlanes.swap();
+	biBitCount.swap();
+	biCompression.swap();
+	biSizeImage.swap();
+	biXPelsPerMeter.swap();
+	biYPelsPerMeter.swap();
+	biClrUsed.swap();
+	biClrImportant.swap();
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiSize()
+{
+	return biSize;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiSizeImage()
+{
+	return biSizeImage;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiWidth()
+{
+	return biWidth;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiHeight()
+{
+	return biHeight;
 }
 
 // ----------------------------------------------------------------------------
 //  DIB CLASS METHODS
 // ----------------------------------------------------------------------------
+DIB::DIB() : bmiColors(0) {}
+
+DIB::~DIB()
+{
+	delete bmiColors;
+	delete colorIndex;
+}
+
 void DIB::loadFile(std::string filename)
 {
 	std::ifstream bitmapFile(filename, std::ios::in | std::ios::binary);
@@ -170,5 +296,66 @@ void DIB::loadFile(std::string filename)
 	bitmapFile.read(reinterpret_cast<char *>(&bmfHeader), sizeof(DIBLIB::BITMAPFILEHEADER));
 	bmfHeader.swap();
 	bmfHeader.print();
+
+	// reading BITMAPINFOHEADER
+	bitmapFile.read(reinterpret_cast<char *>(&bmiHeader), sizeof(DIBLIB::BITMAPINFOHEADER));
+	bmiHeader.swap();
+	bmiHeader.print();
+
+	// reading RGBQUAD (COLOR TABLE)
+	unsigned long colorTableSize = bmfHeader.getBfOffBits().get() - (bmiHeader.getBiSize().get() + sizeof(DIBLIB::BITMAPFILEHEADER));
+
+	if(colorTableSize)
+	{
+		int tables = colorTableSize / 4;
+		bmiColors = new DIBLIB::RGBQUAD[tables];
+
+		for(int i = 0; i < tables; i++)
+		{
+			bitmapFile.read(reinterpret_cast<char *>(&bmiColors[i]), sizeof(DIBLIB::RGBQUAD));
+			bmiColors[i].print();
+		}
+	}
+
+	// reading COLOR INDEX ARRAY
+	unsigned long long colorIndexSize = bmfHeader.getBfSize().get() - bmfHeader.getBfOffBits().get();
+	colorIndex = new unsigned char[colorIndexSize];
+	bitmapFile.read(reinterpret_cast<char *>(colorIndex), colorIndexSize);
+
+	printColorIndexDump();
 }
 
+void DIB::printColorIndexDump()
+{
+	std::cout
+		<< "================================================================================"
+		<< "\n C O L O R   I N D E X   D U M P -   " << bmiHeader.getBiSizeImage().get() << " bytes"
+		<< "\n================================================================================"
+		<< std::endl;
+
+	for(unsigned long i = 0; i < bmiHeader.getBiSizeImage().get(); i++)
+	{
+		std::cout << std::setw(4) << std::hex << static_cast<int>(colorIndex[i]);
+
+		if(((i + 1) % 24) == 0)
+		{
+			std::cout << std::endl;
+		}
+	}
+}
+
+unsigned long DIB::getWidth()
+{
+	return bmiHeader.getBiWidth().get();
+}
+
+unsigned long DIB::getHeight()
+{
+	return bmiHeader.getBiHeight().get();
+}
+
+
+unsigned char *DIB::getColorIndex()
+{
+	return colorIndex;
+}
