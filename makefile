@@ -1,5 +1,5 @@
 BIN_DIR=bin
-OUTPUT_NAME=libdibr.a
+OUTPUT_NAME=libdiblib.a
 SRC_DIR=src
 OBJ_DIR=obj
 INC_DIR=inc
@@ -23,11 +23,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # -----------------------------------------------------------------------------
 #  T E S T I N G   B U I L D S
 # -----------------------------------------------------------------------------
-OUTPUT_TEST_NAME=dibtest.exe
+OUTPUT_TEST_NAME=diblibtest.exe
 TEST_DIR=tests
 
 DIRLIB_FLAGS=-L$(BIN_DIR)
-LIB_FLAGS=-ldibr
+LIB_FLAGS=-ldiblib
 
 test-all:
 	$(MAKE) all

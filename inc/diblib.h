@@ -1,3 +1,10 @@
+/*
+	diblib.h
+
+	This file define the application interface for BITMAP READER.
+	For conditions of distribution and use, see the accompanying LICENSE file.
+*/
+
 #ifndef DIBLIB_INCLUDE_H
 #define DIBLIB_INCLUDE_H
 
