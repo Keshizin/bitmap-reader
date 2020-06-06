@@ -2,6 +2,9 @@
 	diblib.h
 
 	This file define the application interface for BITMAP READER.
+
+	Copyright (c) 2020 Takeshi Ishikawa
+	This file is part of the BITMAP READER and is licensed under the MIT license.
 	For conditions of distribution and use, see the accompanying LICENSE file.
 */
 

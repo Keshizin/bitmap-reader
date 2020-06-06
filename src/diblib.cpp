@@ -1,5 +1,14 @@
-#include <diblib.h>
+/*
+	diblib.cpp
 
+	This file provides a implementation the application interface for BITMAP READER.
+
+	Copyright (c) 2020 Takeshi Ishikawa
+	This file is part of the BITMAP READER and is licensed under the MIT license.
+	For conditions of distribution and use, see the accompanying LICENSE file.
+*/
+
+#include <diblib.h>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
