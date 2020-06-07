@@ -304,53 +304,72 @@ void DIB::loadFile(std::string filename)
 	// reading BITMAPFILEHEADER
 	bitmapFile.read(reinterpret_cast<char *>(&bmfHeader), sizeof(DIBLIB::BITMAPFILEHEADER));
 	bmfHeader.swap();
-	bmfHeader.print();
 
 	// reading BITMAPINFOHEADER
 	bitmapFile.read(reinterpret_cast<char *>(&bmiHeader), sizeof(DIBLIB::BITMAPINFOHEADER));
 	bmiHeader.swap();
-	bmiHeader.print();
 
 	// reading RGBQUAD (COLOR TABLE)
-	unsigned long colorTableSize = bmfHeader.getBfOffBits().get() - (bmiHeader.getBiSize().get() + sizeof(DIBLIB::BITMAPFILEHEADER));
+	colorTableSize = bmfHeader.getBfOffBits().get() - (bmiHeader.getBiSize().get() + sizeof(DIBLIB::BITMAPFILEHEADER));
 
 	if(colorTableSize)
 	{
-		int tables = colorTableSize / 4;
-		bmiColors = new DIBLIB::RGBQUAD[tables];
+		colorTableSize /= sizeof(DIBLIB::RGBQUAD);
+		bmiColors = new DIBLIB::RGBQUAD[colorTableSize];
 
-		for(int i = 0; i < tables; i++)
+		for(unsigned long i = 0; i < colorTableSize; i++)
 		{
 			bitmapFile.read(reinterpret_cast<char *>(&bmiColors[i]), sizeof(DIBLIB::RGBQUAD));
-			bmiColors[i].print();
 		}
 	}
 
 	// reading COLOR INDEX ARRAY
-	unsigned long long colorIndexSize = bmfHeader.getBfSize().get() - bmfHeader.getBfOffBits().get();
+	colorIndexSize = bmfHeader.getBfSize().get() - bmfHeader.getBfOffBits().get();
+	
 	colorIndex = new unsigned char[colorIndexSize];
 	bitmapFile.read(reinterpret_cast<char *>(colorIndex), colorIndexSize);
+}
 
-	printColorIndexDump();
+void DIB::release()
+{
+	delete bmiColors;
+	bmiColors = 0;
+	colorTableSize = 0;
+	delete colorIndex;
+	colorIndex = 0;
 }
 
 void DIB::printColorIndexDump()
 {
 	std::cout
 		<< "================================================================================"
-		<< "\n C O L O R   I N D E X   D U M P -   " << bmiHeader.getBiSizeImage().get() << " bytes"
+		<< "\n C O L O R   I N D E X   D U M P -   " << colorIndexSize << " bytes"
 		<< "\n================================================================================"
 		<< std::endl;
 
-	for(unsigned long i = 0; i < bmiHeader.getBiSizeImage().get(); i++)
+	for(unsigned long i = 0; i < colorIndexSize; i++)
 	{
 		std::cout << std::setw(4) << std::hex << static_cast<int>(colorIndex[i]);
 
-		if(((i + 1) % 24) == 0)
+		if(((i + 1) % 20) == 0)
 		{
 			std::cout << std::endl;
 		}
 	}
+
+	std::cout << std::dec
+		<< "\n================================================================================" << std::endl;
+}
+
+void DIB::printDump()
+{
+	bmfHeader.print();
+	bmiHeader.print();
+
+	for(unsigned long i = 0; i < colorTableSize; i++)
+		bmiColors[i].print();
+
+	printColorIndexDump();
 }
 
 unsigned long DIB::getWidth()
@@ -363,8 +382,17 @@ unsigned long DIB::getHeight()
 	return bmiHeader.getBiHeight().get();
 }
 
-
 unsigned char *DIB::getColorIndex()
 {
 	return colorIndex;
+}
+
+unsigned long DIB::getColorTableSize()
+{
+	return colorTableSize;
+}
+
+unsigned long DIB::getColorIndexSize()
+{
+	return colorIndexSize;
 }
