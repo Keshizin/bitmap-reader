@@ -264,11 +264,6 @@ DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiSize()
 	return biSize;
 }
 
-DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiSizeImage()
-{
-	return biSizeImage;
-}
-
 DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiWidth()
 {
 	return biWidth;
@@ -279,10 +274,25 @@ DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiHeight()
 	return biHeight;
 }
 
+DIBLIB::WORD DIBLIB::BITMAPINFOHEADER::getBiBitCount()
+{
+	return biBitCount;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiCompression()
+{
+	return biCompression;
+}
+
+DIBLIB::DWORD DIBLIB::BITMAPINFOHEADER::getBiSizeImage()
+{
+	return biSizeImage;
+}
+
 // ----------------------------------------------------------------------------
 //  DIB CLASS METHODS
 // ----------------------------------------------------------------------------
-DIB::DIB() : bmiColors(0) {}
+DIB::DIB() : bmiColors(0), colorTableSize(0), colorIndexSize(0), colorIndex(0) {}
 
 DIB::~DIB()
 {
@@ -290,7 +300,7 @@ DIB::~DIB()
 	delete colorIndex;
 }
 
-void DIB::loadFile(std::string filename)
+void DIB::loadFile(std::string filename, int swap)
 {
 	std::ifstream bitmapFile(filename, std::ios::in | std::ios::binary);
 
@@ -325,9 +335,79 @@ void DIB::loadFile(std::string filename)
 
 	// reading COLOR INDEX ARRAY
 	colorIndexSize = bmfHeader.getBfSize().get() - bmfHeader.getBfOffBits().get();
-	
 	colorIndex = new unsigned char[colorIndexSize];
-	bitmapFile.read(reinterpret_cast<char *>(colorIndex), colorIndexSize);
+
+	if(swap)
+	{
+		unsigned long index = 0;
+		unsigned long width;
+		unsigned long height;
+		unsigned long offset;
+
+		switch(bmiHeader.getBiBitCount().get())
+		{
+			case 24:
+				width = bmiHeader.getBiWidth().get();
+				height = bmiHeader.getBiHeight().get();
+				offset = (24 * width + 31) / 32 * 4 - width * 3;
+
+				if(height < 0)
+					height *= -1;
+
+				for(unsigned lines = 0; lines < height; lines++)
+				{
+					for(unsigned bytes = 0; bytes < width; bytes++)
+					{
+						bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index + 2]), sizeof(unsigned char));
+						bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index + 1]), sizeof(unsigned char));
+						bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index]), sizeof(unsigned char));
+						index += 3;
+					}
+
+					for(unsigned bytes = 0; bytes < offset; bytes++)
+					{
+						bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index++]), sizeof(unsigned char));
+					}
+				}
+
+				break;
+
+			case 32:
+				if(bmiHeader.getBiCompression().get() == DIBLIB::DIBLIB_RGB)
+				{
+					width = bmiHeader.getBiWidth().get();
+					height = bmiHeader.getBiHeight().get();
+					offset = (32 * width + 31) / 32 * 4 - width * 4;
+
+					if(height < 0)
+						height *= -1;
+
+					for(unsigned lines = 0; lines < height; lines++)
+					{
+						for(unsigned bytes = 0; bytes < width; bytes++)
+						{
+							bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index + 2]), sizeof(unsigned char));
+							bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index + 1]), sizeof(unsigned char));
+							bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index]), sizeof(unsigned char));
+							bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index + 3]), sizeof(unsigned char));
+							index += 4;
+						}
+
+						for(unsigned bytes = 0; bytes < offset; bytes++)
+						{
+							bitmapFile.read(reinterpret_cast<char *>(&colorIndex[index++]), sizeof(unsigned char));
+						}
+					}
+				}
+
+				break;
+		}
+	}
+	else
+	{
+		bitmapFile.read(reinterpret_cast<char *>(colorIndex), colorIndexSize);
+	}
+	
 }
 
 void DIB::release()
@@ -337,6 +417,7 @@ void DIB::release()
 	colorTableSize = 0;
 	delete colorIndex;
 	colorIndex = 0;
+	colorIndexSize = 0;
 }
 
 void DIB::printColorIndexDump()
