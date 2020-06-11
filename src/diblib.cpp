@@ -156,15 +156,16 @@ void DIBLIB::BITMAPFILEHEADER::swap()
 	bfOffBits.swap();
 }
 
+DIBLIB::DWORD DIBLIB::BITMAPFILEHEADER::getBfSize()
+{
+	return bfSize;
+}
+
 DIBLIB::DWORD DIBLIB::BITMAPFILEHEADER::getBfOffBits()
 {
 	return bfOffBits;
 }
 
-DIBLIB::DWORD DIBLIB::BITMAPFILEHEADER::getBfSize()
-{
-	return bfSize;
-}
 
 // ----------------------------------------------------------------------------
 //  BITMAPINFOHEADER CLASS METHODS
